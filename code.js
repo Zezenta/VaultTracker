@@ -83,10 +83,19 @@
 
 (async () => { //daily report with complex charts
     try {
-        const response = await fetch('/api/price'); // Llama al backend
+        const response = await fetch('http://localhost:3000/api/price');
         const data = await response.json();
         document.getElementById('price').textContent = `${data.USD.symbol} ${data.USD.last}`;
     } catch (error) {
         document.getElementById('price').textContent = 'Error al obtener precio';
     }
 })();
+
+
+const userData = JSON.parse(localStorage.getItem('userData'));
+if (!userData) {
+    window.location.href = '/login.html'; // Redirigir al login si no hay datos
+} else {
+    document.getElementById('welcomeMessage').textContent = userData.message;
+    document.getElementById('lastLogin').textContent = `Last Login: ${userData.lastLogin}`;
+}
