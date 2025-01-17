@@ -4,11 +4,12 @@ const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
-
-
 const app = express();
+
+
 app.use(bodyParser.json());
 app.use(session({ secret: 'mysecret', resave: false, saveUninitialized: true }));
+app.use('/dashboard.html', isAuthenticated);
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -33,7 +34,7 @@ function isAuthenticated(req, res, next) {
   if (req.session.user) {
     return next();
   }
-  res.redirect('/login.html');
+  res.redirect('/vaulttracker');
 }
 
 // Ruta protegida del dashboard
@@ -54,10 +55,6 @@ app.get('/api/bitcoin', async (req, res) => {
         res.status(500).send('Error al obtener datos de la API');
     }
 });
-
-// Servir archivos estáticos
-app.use(express.static(__dirname + '/public'));
-
 
 // Iniciar el servidor
 app.listen(3000, () => {
