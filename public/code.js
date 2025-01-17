@@ -93,9 +93,3 @@
 
 
 const userData = JSON.parse(localStorage.getItem('userData'));
-if (!userData) {
-    window.location.href = '/login.html'; // Redirigir al login si no hay datos
-} else {
-    document.getElementById('welcomeMessage').textContent = userData.message;
-    document.getElementById('lastLogin').textContent = `Last Login: ${userData.lastLogin}`;
-}
