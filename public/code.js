@@ -83,7 +83,7 @@
 
 (async () => { //daily report with complex charts
     try {
-        const response = await fetch('/api/price');
+        const response = await fetch('/api/bitcoin');
         const data = await response.json();
         document.getElementById('price').textContent = `${data.USD.symbol} ${data.USD.last}`;
     } catch (error) {
