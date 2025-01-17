@@ -9,7 +9,6 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(session({ secret: 'mysecret', resave: false, saveUninitialized: true }));
-app.use('/dashboard.html', isAuthenticated);
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -24,6 +23,7 @@ app.post('/login', (req, res) => {
   if (user) {
     req.session.user = user;
     res.status(200).send();
+	console.log("Autenticado");
   } else {
     res.status(401).send('Invalid credentials');
   }
@@ -32,18 +32,23 @@ app.post('/login', (req, res) => {
 // Middleware para verificar si el usuario está autenticado
 function isAuthenticated(req, res, next) {
   if (req.session.user) {
+	  console.log("Se comprobó que está autenticado");
     return next();
   }
+	console.log("Redirigiendo a /vaulttracker...");
   res.redirect('/vaulttracker');
 }
 
 // Ruta protegida del dashboard
 app.get('/dashboard', isAuthenticated, (req, res) => {
-  res.sendFile(__dirname + '/dashboard.html');
+	console.log("Enviando dashboard.html...");
+  res.sendFile(__dirname + '/dashboard');
 });
+
 
 // API para datos del usuario
 app.get('/api/userdata', isAuthenticated, (req, res) => {
+	console.log("Recuperando datos de usuario...");
   res.json(req.session.user);
 });
 
