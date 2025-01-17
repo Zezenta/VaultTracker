@@ -9,8 +9,18 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(session({ secret: 'mysecret', resave: false, saveUninitialized: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware para servir archivos estáticos de manera condicional
+function serveStaticAuthenticated(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/vaulttracker');
+    }
+}
+
+// Sirve archivos estáticos solo si el usuario está autenticado
+app.use('/public', serveStaticAuthenticated, express.static(path.join(__dirname, 'public')));
 
 // Leer el archivo JSON con los usuarios
 const users = JSON.parse(fs.readFileSync('users.json'));
@@ -40,19 +50,6 @@ function isAuthenticated(req, res, next) {
 }
 
 // Ruta protegida del dashboard
-app.get('/vaulttracker/dashboard.html', isAuthenticated, (req, res) => {
-    res.redirect('/vaulttracker');
-});
-
-app.get('/vaulttracker/code.js', isAuthenticated, (req, res) => {
-    res.redirect('/vaulttracker');
-});
-
-app.get('/vaulttracker/style.css', isAuthenticated, (req, res) => {
-    res.redirect('/vaulttracker');
-});
-
-
 app.get('/dashboard', isAuthenticated, (req, res) => {
 	console.log("Enviando dashboard.html...");
 	res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
