@@ -33,7 +33,7 @@ function isAuthenticated(req, res, next) {
 
 // Ruta protegida del dashboard
 app.get('/dashboard', isAuthenticated, (req, res) => {
-  res.sendFile(__dirname + '/public/dashboard.html');
+    res.redirect('/dashboard.html');
 });
 
 // API para datos del usuario
