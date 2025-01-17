@@ -40,6 +40,19 @@ function isAuthenticated(req, res, next) {
 }
 
 // Ruta protegida del dashboard
+app.get('/vaulttracker/dashboard.html', isAuthenticated, (req, res) => {
+    res.redirect('/vaulttracker');
+});
+
+app.get('/vaulttracker/code.js', isAuthenticated, (req, res) => {
+    res.redirect('/vaulttracker');
+});
+
+app.get('/vaulttracker/style.css', isAuthenticated, (req, res) => {
+    res.redirect('/vaulttracker');
+});
+
+
 app.get('/dashboard', isAuthenticated, (req, res) => {
 	console.log("Enviando dashboard.html...");
 	res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
