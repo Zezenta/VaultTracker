@@ -6,6 +6,8 @@ const fs = require('fs');
 const app = express();
 app.use(bodyParser.json());
 app.use(session({ secret: 'mysecret', resave: false, saveUninitialized: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Leer el archivo JSON con los usuarios
 const users = JSON.parse(fs.readFileSync('users.json'));
@@ -33,7 +35,7 @@ function isAuthenticated(req, res, next) {
 
 // Ruta protegida del dashboard
 app.get('/dashboard', isAuthenticated, (req, res) => {
-    res.redirect('/dashboard.html');
+  res.sendFile(__dirname + '/dashboard.html');
 });
 
 // API para datos del usuario
