@@ -83,7 +83,7 @@
 
 (async () => { //daily report with complex charts
     try {
-        const response = await fetch('http://localhost:3000/api/price');
+        const response = await fetch('/api/price');
         const data = await response.json();
         document.getElementById('price').textContent = `${data.USD.symbol} ${data.USD.last}`;
     } catch (error) {
