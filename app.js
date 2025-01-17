@@ -42,7 +42,7 @@ function isAuthenticated(req, res, next) {
 // Ruta protegida del dashboard
 app.get('/dashboard', isAuthenticated, (req, res) => {
 	console.log("Enviando dashboard.html...");
-  res.sendFile(__dirname + '/dashboard');
+	res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
 
