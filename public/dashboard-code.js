@@ -5,5 +5,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('name').innerText = `Name: ${data.name}`;
     document.getElementById('age').innerText = `Age: ${data.age}`;
     document.getElementById('gender').innerText = `Gender: ${data.gender}`;
-  });
-  
+});
