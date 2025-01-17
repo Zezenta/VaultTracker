@@ -44,6 +44,15 @@ app.get('/api/userdata', isAuthenticated, (req, res) => {
   res.json(req.session.user);
 });
 
+app.get('/api/bitcoin', async (req, res) => {
+    try {
+        const response = await axios.get('https://blockchain.info/ticker');
+        res.json(response.data); // Devuelve los datos al frontend
+    } catch (error) {
+        res.status(500).send('Error al obtener datos de la API');
+    }
+});
+
 // Servir archivos estáticos
 app.use(express.static(__dirname + '/public'));
 
