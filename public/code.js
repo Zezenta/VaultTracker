@@ -91,5 +91,11 @@
     }
 })();
 
+document.addEventListener('DOMContentLoaded', async function() {
+    const response = await fetch('/api/userdata');
+    const data = await response.json();
+    alert(data.name);
+});
+
 
 const userData = JSON.parse(localStorage.getItem('userData'));
