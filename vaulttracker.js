@@ -43,16 +43,16 @@ app.get('/dashboard', isAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-app.get("/vaulttracker/dashboard.html", isAuthenticated, (req, res) => {
+app.get("/dashboard/dashboard.html", isAuthenticated, (req, res) => {
 	console.log("checkeando el html manual...");
 	res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-app.get("/vaulttracker/style.css", isAuthenticated, (req, res) => {
+app.get("/dashboard/style.css", isAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "style.css"));
 });
 
-app.get("/vaulttracker/code.js", isAuthenticated, (req, res) => {
+app.get("/dashboard/code.js", isAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "code.js"));
 });
 
