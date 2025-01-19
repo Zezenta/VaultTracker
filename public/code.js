@@ -11,10 +11,10 @@ const sats = 100000000;
     }
 })();
 
-var data;
+var user;
 document.addEventListener('DOMContentLoaded', async function() {
     const response = await fetch('/api/userdata');
-    data = await response.json();
+    user = await response.json();
     leerCompras();
 });
 
