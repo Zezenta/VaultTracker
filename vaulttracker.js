@@ -37,21 +37,19 @@ function isAuthenticated(req, res, next) {
   res.redirect('/vaulttracker');
 }
 
-// Ruta protegida del dashboard
+//dado que cualquier URL más allá de /vaulttracker se redirige hacia acá, y más importante aún,
+//dado que /dashboard redirige todo hacia acá (node), se tiene que servir manualmente esto
 app.get('/dashboard', isAuthenticated, (req, res) => {
 	console.log("Enviando dashboard.html...");
 	res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
-
 app.get("/dashboard/dashboard.html", isAuthenticated, (req, res) => {
 	console.log("checkeando el html manual...");
 	res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
-
 app.get("/dashboard/style.css", isAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "style.css"));
 });
-
 app.get("/dashboard/code.js", isAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "code.js"));
 });

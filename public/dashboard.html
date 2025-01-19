@@ -13,55 +13,48 @@
     <h2 class="header-right">Historial de Patrimonio</h2>
   </div>
 
-  <div class="top-section">
+  <div class="top-section" id="top_section">
     <!-- Pie Chart Section -->
-    <div class="pie-chart">
-      <canvas id="pieChart"></canvas>
+    <div class="pie-chart single" id="pie-div-1">
+      <canvas id="pieChart1"></canvas>
     </div>
+    
 
     <!-- Balance History Section -->
-    <div class="balance-history">
+    <div class="balance-history" id="balance_history">
       <canvas id="balanceChart"></canvas>
     </div>
   </div>
 
   <!-- Transaction Table Section -->
   <div class="table-container">
-    <h2>Transactions</h2>
+    <h2>Transacciones</h2>
+    <h3>Compras en Binance</h3>
     <table>
-      <thead>
+      <thead id="transaction-body">
         <tr>
-          <th>DATE</th>
-          <th>OWNER</th>
-          <th>$VALUE</th>
-          <th>BTC_AMOUNT</th>
-          <th>$CURRENT_VALUE</th>
+          <th style="width: 8%">FECHA</th>
+          <th>DUEÑO</th>
+          <th>MONTO</th>
+          <th>CANTIDAD BTC</th>
+          <th>PRECIO DE COMPRA</th>
+          <th>VALOR ACTUAL</th>
+          <th>RENDIMIENTO</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>dd/mm/yy</td>
-          <td>usr1</td>
-          <td>$30</td>
-          <td>0.0002 BTC</td>
-          <td>$32</td>
-        </tr>
-        <tr>
-          <td>dd/mm/yy</td>
-          <td>usr1</td>
-          <td>$30</td>
-          <td>0.0002 BTC</td>
-          <td>$32</td>
-        </tr>
-        <tr>
-          <td>dd/mm/yy</td>
-          <td>usr1</td>
-          <td>$30</td>
-          <td>0.0002 BTC</td>
-          <td>$32</td>
-        </tr>
-      </tbody>
     </table>
+    <h3>Retiros a catera en frío</h3>
+    <table>
+        <thead id="cold-wallet">
+          <tr>
+            <th style="width: 8%">FECHA</th>
+            <th>CANTIDAD BTC</th>
+            <th>VALOR ACTUAL</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

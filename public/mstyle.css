@@ -43,19 +43,11 @@ body {
 }
 
 .pie-chart {
-    width: 20%;
+    width: 40%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.single {
-    width: 40%
-}
-
-.group {
-    width: 20%
 }
 
 .pie-chart canvas {
@@ -102,16 +94,3 @@ th {
 td {
     font-size: 14px;
 }
-
-.text-verde {
-    color: rgb(48, 240, 48);
-}
-
-.text-rojo {
-    color: red;
-}
-
-.cold {
-    color: rgb(192, 192, 255);
-}
-  

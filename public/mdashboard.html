@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTC Portfolio Tracker</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+  <div class="header-section">
+    <h2 class="header-left" id="price">Patrimonio Total</h2>
+    <h2 class="header-right">Historial de Patrimonio</h2>
+  </div>
+
+  <div class="top-section">
+    <!-- Pie Chart Section -->
+    <div class="pie-chart">
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <!-- Balance History Section -->
+    <div class="balance-history">
+      <canvas id="balanceChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Transaction Table Section -->
+  <div class="table-container">
+    <h2>Transactions</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>DATE</th>
+          <th>OWNER</th>
+          <th>$VALUE</th>
+          <th>BTC_AMOUNT</th>
+          <th>$CURRENT_VALUE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>dd/mm/yy</td>
+          <td>usr1</td>
+          <td>$30</td>
+          <td>0.0002 BTC</td>
+          <td>$32</td>
+        </tr>
+        <tr>
+          <td>dd/mm/yy</td>
+          <td>usr1</td>
+          <td>$30</td>
+          <td>0.0002 BTC</td>
+          <td>$32</td>
+        </tr>
+        <tr>
+          <td>dd/mm/yy</td>
+          <td>usr1</td>
+          <td>$30</td>
+          <td>0.0002 BTC</td>
+          <td>$32</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="code.js">
+  </script>
+</body>
+</html>
