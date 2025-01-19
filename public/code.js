@@ -283,4 +283,4 @@ function leerCompras(){
         }
     }
 }
-console.log(userData.username);
+console.log(user.username);
