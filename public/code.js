@@ -1,5 +1,16 @@
-var price = 0;
+var price;
+async function getPrice(){
+    const response = await fetch("https://blockchain.info/ticker");
+
+    if (!response.ok) {
+        console.log("Error al obtener precio de bitcoin")
+    }
+
+    const data = await response.json();
+    price = data.USD.last;
+}
 const sats = 100000000;
+/* DELETEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 (async () => { //daily report with complex charts
     try {
         const response = await fetch('/api/bitcoin');
@@ -10,135 +21,216 @@ const sats = 100000000;
         document.getElementById('price').textContent = 'Error al obtener precio';
     }
 })();
-
+*/
 var user;
+
 document.addEventListener('DOMContentLoaded', async function() {
     const response = await fetch('/api/userdata');
     user = await response.json();
     leerCompras();
 });
 
-const userData = JSON.parse(localStorage.getItem('userData'));
 
-// Pie Chart
-const pieCtx = document.getElementById('pieChart1').getContext('2d');
-const pieChart = new Chart(pieCtx, {
-    type: 'doughnut',
-    data: {
-    labels: ['usr1', 'usr2', 'usr3'],
-    datasets: [{
-        data: [40, 30, 30],
-        backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
-    }]
-    },
-    options: {
-    responsive: true,
-    plugins: {
-        legend: {
-        labels: { color: '#fff' }
+
+const tableBody = document.getElementById('transaction-body'); //body del cuerpo de transacciones
+var tableRow = document.getElementById("table-row"); //headers de la tabla de binance a la que se le puede añadir la etiqueta de dueño
+const coldTable = document.getElementById('cold-wallet'); //tabla de retiros a frío
+
+const saldoBinanceUsuarios = {};
+const saldoFrioUsuarios = {};
+const reservaDolares = {};
+
+
+
+//create pie charts
+(async() => {
+    if(user.group){ //en caso de que sea un usuario en grupo
+        //inicializar saldos de usuarios
+        const owners = user.users;
+        for (const persona of owners) {
+            saldoBinanceUsuarios[persona] = 0; // Inicializa cada usuario con saldo 0
+            saldoFrioUsuarios[persona] = 0;
+            reservaDolares[persona] = 0;
         }
-    }
-    }
-});
 
-if(2+2 == 4){
-    var top_section = document.getElementById("top_section");
-    var pieChartDiv1 = document.getElementById("pie-div-1")
-    pieChartDiv1.classList.remove("single");
-    pieChartDiv1.classList.add("group");
+        await leerCompras(); //read purchases and create tables
 
-    var pieChartDiv2 = document.createElement('div');
-    pieChartDiv2.className = 'pie-chart';
-    pieChartDiv2.classList.add("pie-chart", "group")
-    var canvas2 = document.createElement('canvas');
-    canvas2.id = "pieChart2";
-
-    var pieChartDiv3 = document.createElement('div');
-    pieChartDiv3.classList.add("pie-chart", "group")
-    var canvas3 = document.createElement('canvas');
-    canvas3.id = "pieChart3";
-
-    var reference = document.getElementById("balance_history");
-
-    pieChartDiv2.appendChild(canvas2);
-    pieChartDiv3.appendChild(canvas3);
-    top_section.insertBefore(pieChartDiv2, reference);
-    top_section.insertBefore(pieChartDiv3, reference);
-
-
-    const pieCtx2 = document.getElementById('pieChart2').getContext('2d');
-    const pieChart2 = new Chart(pieCtx2, {
-        type: 'doughnut',
-        data: {
-        labels: ['usr1', 'usr2', 'usr3'],
-        datasets: [{
-            data: [40, 30, 30],
-            backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
-        }]
-        },
-        options: {
-        responsive: true,
-        plugins: {
-            legend: {
-            labels: { color: '#fff' }
+        //añadir los 3 pie charts
+        // Pie Chart de BITCOIN EN BINANCE
+        const pieCtx = document.getElementById('pieChart1').getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: owners,
+                datasets: [{
+                    data: Object.values(saldoBinanceUsuarios).map(value => value / sats), //saca los valores del mapa saldoBinanceUsuarios y el .map itera sobre cada uno de ellos para modificarlos
+                    backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                // Mostrar el valor real en el tooltip
+                                let valueBTC = context.raw;
+                                let valueUSD = BTCtoUSD(context.raw, true);
+                                return [
+                                    `${valueBTC.toFixed(8)} BTC`,  // Primera línea (BTC)
+                                    `$${valueUSD.toFixed(2)} USD`  // Segunda línea (USD)
+                                ];
+                            }
+                        }
+                    }
+                }
             }
-        }
-        }
-    });
+        });
 
-    const pieCtx3 = document.getElementById('pieChart3').getContext('2d');
-    const pieChart3 = new Chart(pieCtx3, {
-        type: 'doughnut',
-        data: {
-        labels: ['usr1', 'usr2', 'usr3'],
-        datasets: [{
-            data: [40, 30, 30],
-            backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
-        }]
-        },
-        options: {
-        responsive: true,
-        plugins: {
-            legend: {
-            labels: { color: '#fff' }
+        //crear parte del HTML de los otros 2 piecharts
+        var top_section = document.getElementById("top_section");
+        var pieChartDiv1 = document.getElementById("pie-div-1")
+        pieChartDiv1.classList.remove("single");
+        pieChartDiv1.classList.add("group");
+
+        var pieChartDiv2 = document.createElement('div');
+        pieChartDiv2.className = 'pie-chart';
+        pieChartDiv2.classList.add("pie-chart", "group")
+        var canvas2 = document.createElement('canvas');
+        canvas2.id = "pieChart2";
+
+        var pieChartDiv3 = document.createElement('div');
+        pieChartDiv3.classList.add("pie-chart", "group")
+        var canvas3 = document.createElement('canvas');
+        canvas3.id = "pieChart3";
+
+        var reference = document.getElementById("balance_history");
+
+        pieChartDiv2.appendChild(canvas2);
+        pieChartDiv3.appendChild(canvas3);
+        top_section.insertBefore(pieChartDiv2, reference);
+        top_section.insertBefore(pieChartDiv3, reference);
+
+
+        const pieCtx2 = document.getElementById('pieChart2').getContext('2d');
+        const pieChart2 = new Chart(pieCtx2, {
+            type: 'doughnut',
+            data: {
+            labels: owners,
+            datasets: [{
+                data: Object.values(saldoFrioUsuarios).map(value => value / sats),
+                backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
+            }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                // Mostrar el valor real en el tooltip
+                                let valueBTC = context.raw;
+                                let valueUSD = BTCtoUSD(context.raw, true);
+                                return [
+                                    `${valueBTC.toFixed(8)} BTC`,  // Primera línea (BTC)
+                                    `$${valueUSD.toFixed(2)} USD`  // Segunda línea (USD)
+                                ];
+                            }
+                        }
+                    }
+                }
             }
-        }
-        }
-    });
-}
+        });
 
-// Función para crear un canvas para el gráfico
-function crearPieChart(id, dataSet) {
-    // Crear un contenedor div y un canvas
-    const pieChartDiv = document.createElement('div');
-    pieChartDiv.className = 'pie-chart';
-    const canvas = document.createElement('canvas');
-    canvas.id = id;
-  
-    // Agregar el canvas al div
-    pieChartDiv.appendChild(canvas);
-    topSection.appendChild(pieChartDiv);
-  
-    // Crear el gráfico usando Chart.js
-    new Chart(canvas.getContext('2d'), {
-      type: 'pie',
-      data: {
-        labels: dataSet.labels,
-        datasets: [{
-          data: dataSet.data,
-          backgroundColor: dataSet.backgroundColors
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top'
-          }
-        }
-      }
-    });
-}
+        const pieCtx3 = document.getElementById('pieChart3').getContext('2d');
+        const pieChart3 = new Chart(pieCtx3, {
+            type: 'doughnut',
+            data: {
+            labels: owners,
+            datasets: [{
+                data: Object.values(reservaDolares),
+                backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
+            }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `$${context.raw}`
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        //COLUMNA DUEÑO en la tabla de transacciones
+        var ownerColumn = document.createElement("th");
+        ownerColumn.textContent = "DUEÑO";
+        var montoTH = document.getElementById("table-monto-column");
+        tableRow.insertBefore(ownerColumn, montoTH);
+
+    }else{ //en caso de que sea un usuario individual
+        //inicializar saldos del usuario
+        saldoBinanceUsuarios[user.name] = 0;
+        saldoFrioUsuarios[user.name] = 0;
+        reservaDolares[user.name] = 0;
+
+        await leerCompras();
+
+        //único piechart
+        const pieCtx = document.getElementById('pieChart1').getContext('2d');
+        console.log(saldoBinanceUsuarios)
+        console.log(saldoFrioUsuarios)
+        console.log(reservaDolares)
+        const pieChart = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['BTC en Binance', 'BTC en Frío', 'Reservas en Dólares'],
+                datasets: [{
+                    data: [
+                        saldoBinanceUsuarios[user.name] /sats, 
+                        saldoFrioUsuarios[user.name] /sats, 
+                        reservaDolares[user.name] /sats
+                    ],
+                    backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                // Mostrar el valor real en el tooltip
+                                let valueBTC = context.raw;
+                                let valueUSD = BTCtoUSD(context.raw, true);
+                                return [
+                                    `${valueBTC.toFixed(8)} BTC`,  // Primera línea (BTC)
+                                    `$${valueUSD.toFixed(2)} USD`  // Segunda línea (USD)
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+})()
 
 // Balance History Chart
 const balanceCtx = document.getElementById('balanceChart').getContext('2d');
@@ -201,44 +293,73 @@ const balanceChart = new Chart(balanceCtx, {
     }
 });
 
-// Obtén el cuerpo de la tabla donde se agregarán las nuevas filas
-const tableBody = document.getElementById('transaction-body');
+//añadir compras y transacciones a las tablas
+//leer las transacciones del usuario
+async function leerCompras(){
+    await getPrice();
+    //revertir las compras para que se muestren las más recientes primero FIX THIS URGENTLYURGENTLYURGENTLYURGENTLYURGENTLYURGENTLYURGENTLYURGENTLYURGENTLYURGENTLY
+    for(let compra of user.compras){
+        if(compra.tipo == "cold"){
+            var valorActual = (compra.cantidad * price) / sats;
+            var rendimiento = (valorActual - compra.monto) / compra.monto * 100;
+            retiroFrio(compra.fecha, compra.cantidad/sats, valorActual.toFixed(2));
 
-// Función para agregar una fila a la tabla
+            //reiniciar el saldo frio de usuarios y añadir todo eso a la reserva en frío
+            let sumaTotalBinance = 0; //obtener suma total de cuánto se retira
+            for(const persona in saldoBinanceUsuarios) {
+                sumaTotalBinance += saldoBinanceUsuarios[persona]; //obtener suma para luego saber cuánto le corresponde a cada uno
+            }
+            for(const persona in saldoFrioUsuarios){
+                saldoFrioUsuarios[persona] += Math.floor((saldoBinanceUsuarios[persona] / sumaTotalBinance) * compra.cantidad); //llevar cuánto le corresponde a cada usuario a su valor en frío, descontando comisión de retiro
+            }
+            for(const persona in saldoBinanceUsuarios){
+                saldoBinanceUsuarios[persona] = 0; //llevar el salario de binance a 0
+            }
+        }else{
+            var valorActual = (compra.cantidad * price) / sats;
+            var rendimiento = (valorActual - compra.monto) / compra.monto * 100;
+            var precioCompra = compra.monto / (compra.cantidad/sats);
+            var dueno = (user.group) ? compra.owner : user.name;
+            agregarFila(compra.fecha, dueno, compra.monto, compra.cantidad/sats, Math.floor(precioCompra).toLocaleString(), valorActual.toFixed(2), rendimiento.toFixed(2));
+
+            (user.group) ? saldoBinanceUsuarios[compra.owner] += compra.cantidad : saldoBinanceUsuarios[user.name] += compra.cantidad; //añadir la cantidad de compra dependiendo de si es usuario individual o grupo
+        }
+    }
+}
+//agregar filas a compras en binance
 function agregarFila(date, owner, value, btcAmount, precioC, currentValue, change) {
-  // Crea una nueva fila
-  const nuevaFila = tableBody.insertRow();
+    // Crea una nueva fila
+    const nuevaFila = tableBody.insertRow(1);
 
-  // Crea las celdas para la fila
-  const celdaFecha = nuevaFila.insertCell();
-  const celdaPropietario = nuevaFila.insertCell();
-  const celdaValor = nuevaFila.insertCell();
-  const celdaBtc = nuevaFila.insertCell();
-  const celdaPrecioCompra = nuevaFila.insertCell();
-  const celdaValorActual = nuevaFila.insertCell();
-  const celdaRendimiento = nuevaFila.insertCell();
-  var signoRendimiento = (change > 0) ? "+" : "";
+    // Crea las celdas para la fila
+    const celdaFecha = nuevaFila.insertCell();
+    const celdaPropietario = (user.group) ? nuevaFila.insertCell() : undefined;
+    const celdaValor = nuevaFila.insertCell();
+    const celdaBtc = nuevaFila.insertCell();
+    const celdaPrecioCompra = nuevaFila.insertCell();
+    const celdaValorActual = nuevaFila.insertCell();
+    const celdaRendimiento = nuevaFila.insertCell();
+    var signoRendimiento = (change > 0) ? "+" : "";
 
-  // Asigna los valores a cada celda
-  celdaFecha.textContent = date;
-  celdaPropietario.textContent = owner;
-  celdaValor.textContent = `$${value}`;
-  celdaBtc.textContent = `${btcAmount} BTC`;
-  celdaPrecioCompra.textContent = `$${precioC}`;
-  celdaValorActual.textContent = `$${currentValue}`;
-  celdaRendimiento.textContent = `${signoRendimiento}${change}%`;
+    // Asigna los valores a cada celda
+    celdaFecha.textContent = date;
+    if (user.group) celdaPropietario.textContent = owner;
+    celdaValor.textContent = `$${value}`;
+    celdaBtc.textContent = `${btcAmount} BTC`;
+    celdaPrecioCompra.textContent = `$${precioC}`;
+    celdaValorActual.textContent = `$${currentValue}`;
+    celdaRendimiento.textContent = `${signoRendimiento}${change}%`;
 
-  const clase = change > 0 ? 'text-verde' : 'text-rojo';
-  celdaValorActual.className = clase;
-  celdaRendimiento.className = clase;
+    const clase = change > 0 ? 'text-verde' : 'text-rojo';
+    celdaValorActual.className = clase;
+    celdaRendimiento.className = clase;
 }
 
-const coldTable = document.getElementById('cold-wallet');
+//agregar filas a los retiros en frío
 
-// Función para agregar una fila a la tabla
 function retiroFrio(date, cantidad, valorActual, change) {
     //para la tabla de Binance
-    const nuevaFila = tableBody.insertRow();
+    const nuevaFila = tableBody.insertRow(1);
     const celdaFechaBi = nuevaFila.insertCell()
     const celdaTextoBi = nuevaFila.insertCell();
 
@@ -252,35 +373,13 @@ function retiroFrio(date, cantidad, valorActual, change) {
     const celdaFecha = nuevaFilaCold.insertCell();
     const celdaCantidad = nuevaFilaCold.insertCell();
     const celdaValor = nuevaFilaCold.insertCell();
-    //const celdaRendimiento = nuevaFilaCold.insertCell();
-    //var signoRendimiento = (change > 0) ? "+" : "";
 
     celdaFecha.textContent = date;
     celdaCantidad.textContent = `${cantidad} BTC`;
     celdaValor.textContent = `$${valorActual}`;
-    //celdaRendimiento.textContent = `${signoRendimiento}${change}%`;
-
-    //const clase = change > 0 ? 'text-verde' : 'text-rojo';
-    //celdaValor.className = clase;
-    //celdaRendimiento.className = clase;
 }
 
-
-
-//const userData = users[1];
-
-function leerCompras(){
-    for(let compra of user.compras){
-        if(compra.tipo == "cold"){
-            var valorActual = (compra.cantidad * price) / sats;
-            var rendimiento = (valorActual - compra.monto) / compra.monto * 100;
-            retiroFrio(compra.fecha, compra.cantidad/sats, valorActual.toFixed(2));
-        }else{
-            var valorActual = (compra.cantidad * price) / sats;
-            var rendimiento = (valorActual - compra.monto) / compra.monto * 100;
-            var precioCompra = compra.monto / (compra.cantidad/sats);
-            agregarFila(compra.fecha, compra.owner, compra.monto, compra.cantidad/sats, Math.floor(precioCompra).toLocaleString(), valorActual.toFixed(2), rendimiento.toFixed(2));
-        }
-    }
+//convertir BTC a USD
+function BTCtoUSD(BTC){
+    return BTC * price;
 }
-console.log(user.username);
