@@ -24,13 +24,6 @@ const sats = 100000000;
 */
 var user;
 
-document.addEventListener('DOMContentLoaded', async function() {
-    const response = await fetch('/api/userdata');
-    user = await response.json();
-    leerCompras();
-});
-
-
 
 const tableBody = document.getElementById('transaction-body'); //body del cuerpo de transacciones
 var tableRow = document.getElementById("table-row"); //headers de la tabla de binance a la que se le puede añadir la etiqueta de dueño
@@ -44,6 +37,8 @@ const reservaDolares = {};
 
 //create pie charts
 (async() => {
+    const response = await fetch('/api/userdata');
+    user = await response.json();
     if(user.group){ //en caso de que sea un usuario en grupo
         //inicializar saldos de usuarios
         const owners = user.users;
