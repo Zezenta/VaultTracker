@@ -39,7 +39,11 @@ const reservaDolares = {};
 (async() => {
     const response = await fetch('/api/userdata');
     user = await response.json();
+    
     if(user.group){ //en caso de que sea un usuario en grupo
+        //modificar título de primer gráfico
+        var title1 = document.getElementById("title1");
+        title1.textContent = "Saldo Binance";
         //inicializar saldos de usuarios
         const owners = user.users;
         for (const persona of owners) {
@@ -52,8 +56,8 @@ const reservaDolares = {};
 
         //añadir los 3 pie charts
         // Pie Chart de BITCOIN EN BINANCE
-        const pieCtx = document.getElementById('pieChart1').getContext('2d');
-        const pieChart = new Chart(pieCtx, {
+        const canvas1 = document.getElementById('pieChart1').getContext('2d');
+        const pieChart = new Chart(canvas1, {
             type: 'doughnut',
             data: {
                 labels: owners,
@@ -97,10 +101,21 @@ const reservaDolares = {};
         var canvas2 = document.createElement('canvas');
         canvas2.id = "pieChart2";
 
+        var title2 = document.createElement('h3');
+        title2.className = 'chart-title';
+        title2.textContent = 'BTC en Frío';
+        pieChartDiv2.appendChild(title2);
+
+
         var pieChartDiv3 = document.createElement('div');
         pieChartDiv3.classList.add("pie-chart", "group")
         var canvas3 = document.createElement('canvas');
         canvas3.id = "pieChart3";
+
+        var title3 = document.createElement('h3');
+        title3.className = 'chart-title';
+        title3.textContent = 'Reservas en Dólares';
+        pieChartDiv3.appendChild(title3);
 
         var reference = document.getElementById("balance_history");
 
@@ -114,11 +129,11 @@ const reservaDolares = {};
         const pieChart2 = new Chart(pieCtx2, {
             type: 'doughnut',
             data: {
-            labels: owners,
-            datasets: [{
-                data: Object.values(saldoFrioUsuarios).map(value => value / sats),
-                backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
-            }]
+                labels: owners,
+                datasets: [{
+                    data: Object.values(saldoFrioUsuarios).map(value => value / sats),
+                    backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
+                }]
             },
             options: {
                 responsive: true,
@@ -147,11 +162,11 @@ const reservaDolares = {};
         const pieChart3 = new Chart(pieCtx3, {
             type: 'doughnut',
             data: {
-            labels: owners,
-            datasets: [{
-                data: Object.values(reservaDolares),
-                backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
-            }]
+                labels: owners,
+                datasets: [{
+                    data: Object.values(reservaDolares),
+                    backgroundColor: ['#FFD700', '#FF4500', '#1E90FF']
+                }]
             },
             options: {
                 responsive: true,
@@ -177,6 +192,10 @@ const reservaDolares = {};
         tableRow.insertBefore(ownerColumn, montoTH);
 
     }else{ //en caso de que sea un usuario individual
+        //modificar el primer título
+        var title1 = document.getElementById("title1");
+        title1.textContent = user.name;
+
         //inicializar saldos del usuario
         saldoBinanceUsuarios[user.name] = 0;
         saldoFrioUsuarios[user.name] = 0;

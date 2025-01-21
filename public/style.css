@@ -42,12 +42,21 @@ body {
     height: 50%;
 }
 
+.chart-title {
+    font-size: 1.2em;
+    color: #fff;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
 .pie-chart {
     width: 20%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    text-align: center;
 }
 
 .single {
@@ -59,7 +68,7 @@ body {
 }
 
 .pie-chart canvas {
-    max-width: 80%;
+    max-width: 100%;
     height: auto;
 }
 
