@@ -23,7 +23,7 @@ const sats = 100000000;
 })();
 */
 var user;
-
+var prices;
 
 const tableBody = document.getElementById('transaction-body'); //body del cuerpo de transacciones
 var tableRow = document.getElementById("table-row"); //headers de la tabla de binance a la que se le puede añadir la etiqueta de dueño
@@ -37,8 +37,11 @@ const reservaDolares = {};
 
 //create pie charts
 (async() => {
-    const response = await fetch('/api/userdata');
-    user = await response.json();
+    const userresponse = await fetch('/api/userdata');
+    user = await userresponse.json();
+
+    const pricesresponse = await fetch('/prices');
+    prices = await pricesresponse.json();
     
     if(user.group){ //en caso de que sea un usuario en grupo
         //modificar título de primer gráfico
@@ -246,11 +249,41 @@ const reservaDolares = {};
     }
 
 
+
+
     // Balance History Chart
-    var cantidades = user.compras.filter(compra => compra.cantidad !== undefined).map(compra => compra.cantidad);
-    var montos = user.compras.filter(compra => compra.monto !== undefined).map(compra => compra.monto);
-    const cantidadOverTime = [];
-    const montoOverTime = [];
+    var cantidades = user.compras.map(compra => compra.cantidad);
+    var cantidadOverTime = [];
+
+    var primeraComprafecha = user.compras[0].fecha; //when did the purchases start
+    var d = new Date(); //get current date in yyyy-mm-dd format...
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); //months are 0-indexed, padstart for 00 standard
+    const day = String(d.getDate()).padStart(2, '0'); //padstart for 00 standard
+    var currDate = `${year}-${month}-${day}`; //yyyy-mm-dd
+
+    function getSymmetricDates(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+    
+        // Restamos un día a la fecha inicial
+        start.setDate(start.getDate() - 1);
+    
+        const result = [start.toISOString().split('T')[0]]; // Primera fecha (un día antes)
+    
+        // Calculamos el intervalo entre fechas
+        const totalDays = (end - start) / (1000 * 60 * 60 * 24);
+        const step = totalDays / 12; // 12 intervalos para generar 13 fechas en total
+    
+        for (let i = 1; i <= 12; i++) {
+            const nextDate = new Date(start);
+            nextDate.setDate(start.getDate() + Math.round(i * step));
+            result.push(nextDate.toISOString().split('T')[0]);
+        }
+        return result;
+    }
+    var dateLabels = getSymmetricDates(primeraComprafecha, currDate);
+
     // Variable para mantener la suma acumulada
     let controlC = 0;
     let controlM = 0;
@@ -259,19 +292,23 @@ const reservaDolares = {};
         controlC += cantidades[i];  // Añadir el valor actual a la suma acumulada
         cantidadOverTime.push(controlC);  // Agregar la suma acumulada al array de resultados
 
-        controlM += montos[i];  // Añadir el valor actual a la suma acumulada
-        montoOverTime.push(controlM);  // Agregar la suma acumulada al array de resultados
     }
+    cantidadOverTime.map(cantidad => cantidad / sats);
+
+
+
+
+
 
     const balanceCtx = document.getElementById('balanceChart').getContext('2d');
     const balanceChart = new Chart(balanceCtx, {
         type: 'line',
         data: {
-            labels: ['7', '9', '13', '17', '21', '25', '2025'], //LAS FECHAS IRÁN AQUÍ
+            labels: dateLabels, //LAS FECHAS IRÁN AQUÍ
             datasets: [
                 {
                     label: 'BTC',
-                    data: [0, ...cantidadOverTime], //LOS BALANCES DE BTC IRÁN AQUÍ
+                    data: [0, 1, 2, 3, 4, 5, 8], //LOS BALANCES DE BTC IRÁN AQUÍ
                     borderColor: 'rgba(255, 215, 0)',
                     backgroundColor: 'rgba(255, 215, 0, 0.2)',  //relleno transparente
                     tension: 0.3,
@@ -280,7 +317,7 @@ const reservaDolares = {};
                 },
                 {
                     label: 'USD',
-                    data: [0, ...montoOverTime], //LOS VALORES EN DÓLARES IRÁN AQUÍ
+                    data: [0, 1, 2, 3, 4, 5, 8], //LOS VALORES EN DÓLARES IRÁN AQUÍ
                     borderColor: 'rgba(50, 205, 50)',
                     backgroundColor: 'rgba(50, 205, 50, 0.2)',  //relleno transparente
                     tension: 0.3,

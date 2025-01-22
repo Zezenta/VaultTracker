@@ -12,6 +12,7 @@ app.use(session({ secret: 'mysecret', resave: false, saveUninitialized: true }))
 
 // Leer el archivo JSON con los usuarios
 const users = JSON.parse(fs.readFileSync('users.json'));
+var prices = JSON.parse(fs.readFileSync('prices.json'));
 
 // Ruta de login
 app.post('/login', (req, res) => {
@@ -57,7 +58,11 @@ app.get("/dashboard/code.js", isAuthenticated, (req, res) => {
 // API para datos del usuario
 app.get('/api/userdata', isAuthenticated, (req, res) => {
 	console.log("Recuperando datos de usuario...");
-  res.json(req.session.user);
+    res.json(req.session.user);
+});
+
+app.get('/prices', async (req, res) => {
+    res.json(prices)
 });
 
 app.get('/api/bitcoin', async (req, res) => {
