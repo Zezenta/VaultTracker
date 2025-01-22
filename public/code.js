@@ -40,7 +40,7 @@ const reservaDolares = {};
     const userresponse = await fetch('/api/userdata');
     user = await userresponse.json();
 
-    const pricesresponse = await fetch('/prices');
+    const pricesresponse = await fetch('/api/prices');
     prices = await pricesresponse.json();
     
     if(user.group){ //en caso de que sea un usuario en grupo
@@ -288,12 +288,6 @@ const reservaDolares = {};
     let controlC = 0;
     let controlM = 0;
     // Recorrer el array original
-    for (let i = 0; i < montos.length; i++) {
-        controlC += cantidades[i];  // Añadir el valor actual a la suma acumulada
-        cantidadOverTime.push(controlC);  // Agregar la suma acumulada al array de resultados
-
-    }
-    cantidadOverTime.map(cantidad => cantidad / sats);
 
 
 

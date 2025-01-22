@@ -61,7 +61,7 @@ app.get('/api/userdata', isAuthenticated, (req, res) => {
     res.json(req.session.user);
 });
 
-app.get('/prices', async (req, res) => {
+app.get('/api/prices', async (req, res) => {
     res.json(prices)
 });
 
