@@ -244,79 +244,82 @@ const reservaDolares = {};
             }
         });
     }
-})()
 
-// Balance History Chart
-const balanceCtx = document.getElementById('balanceChart').getContext('2d');
-const balanceChart = new Chart(balanceCtx, {
-    type: 'line',
-    data: {
-        labels: ['7', '9', '13', '17', '21', '25', '2025'], //LAS FECHAS IRÁN AQUÍ
-        datasets: [
-            {
-                label: 'BTC',
-                data: [0, ...user.compras.filter(compra => compra.cantidad !== undefined).map(compra => compra.cantidad)], //LOS BALANCES DE BTC IRÁN AQUÍ
-                borderColor: 'rgba(255, 215, 0)',
-                backgroundColor: 'rgba(255, 215, 0, 0.2)',  //relleno transparente
-                tension: 0.3,
-                fill: true,
-                yAxisID: 'y'
-            },
-            {
-                label: 'USD',
-                data: [550, 580, 600, 620, 640, 660, 680], //LOS VALORES EN DÓLARES IRÁN AQUÍ
-                borderColor: 'rgba(50, 205, 50)',
-                backgroundColor: 'rgba(50, 205, 50, 0.2)',  //relleno transparente
-                tension: 0.3,
-                fill: true,
-                yAxisID: 'y1'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: { 
-                ticks: { color: 'rgb(110, 112, 121)' } 
-            },
-            y: {
-                position: 'left',
-                ticks: { color: 'rgb(110, 112, 121)' },
-                title: {
-                    display: true,
-                    text: 'BTC Balance',
-                    color: '#FFD700'
-                }
-            },
-            y1: {
-                position: 'right',
-                ticks: { color: 'rgb(110, 112, 121)' },
-                title: {
-                    display: true,
-                    text: 'USD Value',
-                    color: '#32CD32'
+
+    // Balance History Chart
+    const balanceCtx = document.getElementById('balanceChart').getContext('2d');
+    const balanceChart = new Chart(balanceCtx, {
+        type: 'line',
+        data: {
+            labels: ['7', '9', '13', '17', '21', '25', '2025'], //LAS FECHAS IRÁN AQUÍ
+            datasets: [
+                {
+                    label: 'BTC',
+                    data: [0, ...user.compras.filter(compra => compra.cantidad !== undefined).map(compra => compra.cantidad)], //LOS BALANCES DE BTC IRÁN AQUÍ
+                    borderColor: 'rgba(255, 215, 0)',
+                    backgroundColor: 'rgba(255, 215, 0, 0.2)',  //relleno transparente
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'y'
                 },
-                grid: {
-                    drawOnChartArea: false
+                {
+                    label: 'USD',
+                    data: [550, 580, 600, 620, 640, 660, 680], //LOS VALORES EN DÓLARES IRÁN AQUÍ
+                    borderColor: 'rgba(50, 205, 50)',
+                    backgroundColor: 'rgba(50, 205, 50, 0.2)',  //relleno transparente
+                    tension: 0.3,
+                    fill: true,
+                    yAxisID: 'y1'
                 }
-            }
+            ]
         },
-        plugins: {
-            legend: {
-                labels: { color: '#fff' }
+        options: {
+            responsive: true,
+            scales: {
+                x: { 
+                    ticks: { color: 'rgb(110, 112, 121)' } 
+                },
+                y: {
+                    position: 'left',
+                    ticks: { color: 'rgb(110, 112, 121)' },
+                    title: {
+                        display: true,
+                        text: 'BTC Balance',
+                        color: '#FFD700'
+                    }
+                },
+                y1: {
+                    position: 'right',
+                    ticks: { color: 'rgb(110, 112, 121)' },
+                    title: {
+                        display: true,
+                        text: 'USD Value',
+                        color: '#32CD32'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
             },
-            tooltip: {
-                callbacks: {
-                    labelColor: function(context) {
-                        return {
-                            backgroundColor: context.dataset.borderColor,  //color sólido para el cuadradito del tooltip
-                        };
+            plugins: {
+                legend: {
+                    labels: { color: '#fff' }
+                },
+                tooltip: {
+                    callbacks: {
+                        labelColor: function(context) {
+                            return {
+                                backgroundColor: context.dataset.borderColor,  //color sólido para el cuadradito del tooltip
+                            };
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
+})()
+
+
 
 
 //añadir compras y transacciones a las tablas
