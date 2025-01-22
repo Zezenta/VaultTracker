@@ -247,6 +247,22 @@ const reservaDolares = {};
 
 
     // Balance History Chart
+    var cantidades = user.compras.filter(compra => compra.cantidad !== undefined).map(compra => compra.cantidad);
+    var montos = user.compras.filter(compra => compra.monto !== undefined).map(compra => compra.monto);
+    const cantidadOverTime = [];
+    const montoOverTime = [];
+    // Variable para mantener la suma acumulada
+    let controlC = 0;
+    let controlM = 0;
+    // Recorrer el array original
+    for (let i = 0; i < montos.length; i++) {
+        controlC += cantidades[i];  // Añadir el valor actual a la suma acumulada
+        cantidadOverTime.push(controlC);  // Agregar la suma acumulada al array de resultados
+
+        controlM += montos[i];  // Añadir el valor actual a la suma acumulada
+        montoOverTime.push(controlM);  // Agregar la suma acumulada al array de resultados
+    }
+
     const balanceCtx = document.getElementById('balanceChart').getContext('2d');
     const balanceChart = new Chart(balanceCtx, {
         type: 'line',
@@ -255,7 +271,7 @@ const reservaDolares = {};
             datasets: [
                 {
                     label: 'BTC',
-                    data: [0, ...user.compras.filter(compra => compra.cantidad !== undefined).map(compra => compra.cantidad)], //LOS BALANCES DE BTC IRÁN AQUÍ
+                    data: [0, ...cantidadOverTime], //LOS BALANCES DE BTC IRÁN AQUÍ
                     borderColor: 'rgba(255, 215, 0)',
                     backgroundColor: 'rgba(255, 215, 0, 0.2)',  //relleno transparente
                     tension: 0.3,
@@ -264,7 +280,7 @@ const reservaDolares = {};
                 },
                 {
                     label: 'USD',
-                    data: [550, 580, 600, 620, 640, 660, 680], //LOS VALORES EN DÓLARES IRÁN AQUÍ
+                    data: [0, ...montoOverTime], //LOS VALORES EN DÓLARES IRÁN AQUÍ
                     borderColor: 'rgba(50, 205, 50)',
                     backgroundColor: 'rgba(50, 205, 50, 0.2)',  //relleno transparente
                     tension: 0.3,
