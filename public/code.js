@@ -293,7 +293,8 @@ const reservaDolares = {};
         let currentDate = new Date(startDate);
         for(i = 0; i < dateLabels.length; i++){
             let dollarValue = prices[currentDate.toISOString().split('T')[0]] * balanceBTC[i];
-            dataUSD.push(dollarValue)
+            dataUSD.push(dollarValue);
+            currentDate.setDate(currentDate.getDate() + 1);
         }
         return dataUSD;
     }
@@ -316,7 +317,7 @@ const reservaDolares = {};
                 },
                 {
                     label: 'USD',
-                    data: usdData, //LOS VALORES EN DÓLARES IRÁN AQUÍ
+                    data: usdData.map(quant => quant / sats), //LOS VALORES EN DÓLARES IRÁN AQUÍ
                     borderColor: 'rgba(50, 205, 50)',
                     backgroundColor: 'rgba(50, 205, 50, 0.2)',  //relleno transparente
                     tension: 0.3,
