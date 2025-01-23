@@ -298,7 +298,7 @@ const reservaDolares = {};
             datasets: [
                 {
                     label: 'BTC',
-                    data: btcData, //LOS BALANCES DE BTC IRÁN AQUÍ
+                    data: btcData.map(quant => quant / sats), //LOS BALANCES DE BTC IRÁN AQUÍ
                     borderColor: 'rgba(255, 215, 0)',
                     backgroundColor: 'rgba(255, 215, 0, 0.2)',  //relleno transparente
                     tension: 0.3,
@@ -318,6 +318,12 @@ const reservaDolares = {};
         },
         options: {
             responsive: true,
+            elements: {
+                point: {
+                    radius: 0  //delete individual dots
+                }
+            },
+            animation: false, //deactivate animations
             scales: {
                 x: { 
                     ticks: { color: 'rgb(110, 112, 121)' } 
