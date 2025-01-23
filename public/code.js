@@ -256,40 +256,32 @@ const reservaDolares = {};
     var cantidadOverTime = [];
 
     var primeraComprafecha = user.compras[0].fecha; //when did the purchases start
-    var d = new Date(); //get current date in yyyy-mm-dd format...
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0'); //months are 0-indexed, padstart for 00 standard
-    const day = String(d.getDate()).padStart(2, '0'); //padstart for 00 standard
-    var currDate = `${year}-${month}-${day}`; //yyyy-mm-dd
+    var currDate = new Date().toISOString().split('T')[0];
 
     function getSymmetricDates(startDate, endDate) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-    
-        // Restamos un día a la fecha inicial
-        start.setDate(start.getDate() - 1);
-    
-        const result = [start.toISOString().split('T')[0]]; // Primera fecha (un día antes)
-    
-        // Calculamos el intervalo entre fechas
-        const totalDays = (end - start) / (1000 * 60 * 60 * 24);
-        const step = totalDays / 12; // 12 intervalos para generar 13 fechas en total
-    
-        for (let i = 1; i <= 12; i++) {
-            const nextDate = new Date(start);
-            nextDate.setDate(start.getDate() + Math.round(i * step));
-            result.push(nextDate.toISOString().split('T')[0]);
+        let dates = [];
+        let currentDate = new Date(startDate);
+        while (currentDate <= new Date(endDate)) {
+            dates.push(currentDate.toISOString().split('T')[0]); // YYYY-MM-DD
+            currentDate.setDate(currentDate.getDate() + 1);
         }
-        return result;
+        return dates;
     }
+
     var dateLabels = getSymmetricDates(primeraComprafecha, currDate);
 
     // Variable para mantener la suma acumulada
-    let controlC = 0;
-    let controlM = 0;
+    var btcBalance = 0;
+    var btcData = [];
     // Recorrer el array original
 
-
+    dateLabels.forEach(date => {
+        const purchase = user.compras.find(p => p.date === date);
+        if (purchase) {
+            btcBalance += purchase.btc;
+        }
+        btcData.push(btcBalance);
+    });
 
 
 
@@ -302,7 +294,7 @@ const reservaDolares = {};
             datasets: [
                 {
                     label: 'BTC',
-                    data: [0, 1, 2, 3, 4, 5, 8], //LOS BALANCES DE BTC IRÁN AQUÍ
+                    data: btcData, //LOS BALANCES DE BTC IRÁN AQUÍ
                     borderColor: 'rgba(255, 215, 0)',
                     backgroundColor: 'rgba(255, 215, 0, 0.2)',  //relleno transparente
                     tension: 0.3,
