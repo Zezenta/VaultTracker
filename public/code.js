@@ -276,7 +276,7 @@ const reservaDolares = {};
     // Recorrer el array original
 
     dateLabels.forEach(date => {
-        const purchase = user.compras.find(p => p.date === date);
+        const purchase = user.compras.find(p => p.fecha === date);
         if (purchase) {
             btcBalance += purchase.cantidad;
         }
