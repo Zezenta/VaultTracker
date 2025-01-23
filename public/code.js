@@ -252,7 +252,7 @@ const reservaDolares = {};
 
 
     // Balance History Chart
-    var primeraComprafecha = user.compras[0].fecha; //when did the purchases start
+    var primeraComprafecha = new Date(user.compras[0].fecha); //when did the purchases start
     var currDate = new Date().toISOString().split('T')[0];
 
     function getSymmetricDates(startDate, endDate) { //get dates array for chart.js
@@ -287,7 +287,17 @@ const reservaDolares = {};
     });
 
     //get USD values depending on historical price
-    
+    function BTCbalanceToUSD(balanceBTC, startDate){
+        let dataUSD = [];
+        startDate.setDate(startDate.getDate() - 1);
+        let currentDate = new Date(startDate);
+        for(i = 0; i < dateLabels.length; i++){
+            let dollarValue = prices[currentDate.toISOString().split('T')[0]] * balanceBTC[i];
+            dataUSD.push(dollarValue)
+        }
+        return dataUSD;
+    }
+    var usdData = BTCbalanceToUSD(btcData, primeraComprafecha);
 
     const balanceCtx = document.getElementById('balanceChart').getContext('2d');
     const balanceChart = new Chart(balanceCtx, {
@@ -306,7 +316,7 @@ const reservaDolares = {};
                 },
                 {
                     label: 'USD',
-                    data: [0, 1, 2, 3, 4, 5, 8], //LOS VALORES EN DÓLARES IRÁN AQUÍ
+                    data: usdData, //LOS VALORES EN DÓLARES IRÁN AQUÍ
                     borderColor: 'rgba(50, 205, 50)',
                     backgroundColor: 'rgba(50, 205, 50, 0.2)',  //relleno transparente
                     tension: 0.3,
@@ -362,7 +372,13 @@ const reservaDolares = {};
                         },
                         label: function(tooltipItem) {
                             let value = tooltipItem.raw; 
-                            return `${tooltipItem.dataset.label}: ${value.toFixed(8)} BTC`;
+                            // Verifica qué dataset se está mostrando en el tooltip
+                            if (tooltipItem.dataset.label === 'BTC') {
+                                return `${value.toFixed(8)} BTC`;
+                            } else if (tooltipItem.dataset.label === 'USD') {
+                                return `$${value.toFixed(2)}`;
+                            }
+                            return value;
                         }
                     }
                 }
