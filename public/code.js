@@ -359,7 +359,11 @@ const reservaDolares = {};
                         labelColor: function(context) {
                             return {
                                 backgroundColor: context.dataset.borderColor,  //color sólido para el cuadradito del tooltip
-                            };
+                            }
+                        },
+                        label: function(tooltipItem) {
+                            let value = tooltipItem.raw; 
+                            return `${tooltipItem.dataset.label}: ${value.toFixed(8)} BTC`;
                         }
                     }
                 }
