@@ -278,7 +278,7 @@ const reservaDolares = {};
     dateLabels.forEach(date => {
         const purchase = user.compras.find(p => p.date === date);
         if (purchase) {
-            btcBalance += purchase.btc;
+            btcBalance += purchase.cantidad;
         }
         btcData.push(btcBalance);
     });
