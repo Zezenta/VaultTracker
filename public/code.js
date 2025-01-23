@@ -252,14 +252,12 @@ const reservaDolares = {};
 
 
     // Balance History Chart
-    var cantidades = user.compras.map(compra => compra.cantidad);
-    var cantidadOverTime = [];
-
     var primeraComprafecha = user.compras[0].fecha; //when did the purchases start
     var currDate = new Date().toISOString().split('T')[0];
 
-    function getSymmetricDates(startDate, endDate) {
+    function getSymmetricDates(startDate, endDate) { //get dates array for chart.js
         let dates = [];
+        startDate.setDate(startDate.getDate() - 1);
         let currentDate = new Date(startDate);
         while (currentDate <= new Date(endDate)) {
             dates.push(currentDate.toISOString().split('T')[0]); // YYYY-MM-DD
@@ -267,15 +265,13 @@ const reservaDolares = {};
         }
         return dates;
     }
-
     var dateLabels = getSymmetricDates(primeraComprafecha, currDate);
 
-    // Variable para mantener la suma acumulada
-    var btcBalance = 0;
-    var coldBTCBalance = 0;
-    var btcData = [];
-    // Recorrer el array original
+    var btcBalance = 0; //for line chart
+    var coldBTCBalance = 0; //for cold balance for line chart
+    var btcData = []; //for chart.js
 
+    //create the btcData array
     dateLabels.forEach(date => {
         const purchases = user.compras.filter(p => p.fecha === date); //get all purchases from each date
 
@@ -289,6 +285,9 @@ const reservaDolares = {};
         }
         btcData.push(btcBalance); //push that to the data
     });
+
+    //get USD values depending on historical price
+    
 
     const balanceCtx = document.getElementById('balanceChart').getContext('2d');
     const balanceChart = new Chart(balanceCtx, {
