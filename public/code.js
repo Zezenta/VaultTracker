@@ -276,15 +276,17 @@ const reservaDolares = {};
     // Recorrer el array original
 
     dateLabels.forEach(date => {
-        const purchase = user.compras.find(p => p.fecha === date);
-        if (purchase) {
-            btcBalance += purchase.cantidad;
+        const purchases = user.compras.filter(p => p.fecha === date); //get all purchases from each date
+
+        for(const purchase of purchases){ //iterate through all of that day's purchases
+            if(purchase.tipo === "binance"){
+                btcBalance += purchase.cantidad; //if its a binance purchase, add that
+            }else if(purchase.tipo === "cold"){
+                btcBalance = purchase.cantidad + Object.values(saldoFrioUsuarios).reduce((total, saldo) => total + saldo, 0); //if its a cold withdrawal, just make that the new balance + what you have in cold
+            }
         }
-        btcData.push(btcBalance);
+        btcData.push(btcBalance); //push that to the data
     });
-
-
-
 
     const balanceCtx = document.getElementById('balanceChart').getContext('2d');
     const balanceChart = new Chart(balanceCtx, {
