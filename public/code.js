@@ -272,6 +272,7 @@ const reservaDolares = {};
 
     // Variable para mantener la suma acumulada
     var btcBalance = 0;
+    var coldBTCBalance = 0;
     var btcData = [];
     // Recorrer el array original
 
@@ -282,7 +283,8 @@ const reservaDolares = {};
             if(purchase.tipo === "binance"){
                 btcBalance += purchase.cantidad; //if its a binance purchase, add that
             }else if(purchase.tipo === "cold"){
-                btcBalance = purchase.cantidad + Object.values(saldoFrioUsuarios).reduce((total, saldo) => total + saldo, 0); //if its a cold withdrawal, just make that the new balance + what you have in cold
+                btcBalance = purchase.cantidad + coldBTCBalance; //if its a cold withdrawal, just make that the new balance + what you have in cold
+                coldBTCBalance += purchase.cantidad; // add that to the cold Balance
             }
         }
         btcData.push(btcBalance); //push that to the data
