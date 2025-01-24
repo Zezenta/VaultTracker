@@ -43,7 +43,10 @@ const reservaDolares = {};
     const pricesresponse = await fetch('/api/prices');
     prices = await pricesresponse.json();
     
+    var top_section = document.getElementById("top_section");
+
     if(user.group){ //en caso de que sea un usuario en grupo
+        top_section.classList.add("tgroup"); //this will be useful for media queries in mobile
         //modificar título de primer gráfico
         var title1 = document.getElementById("title1");
         title1.textContent = "Saldo Binance";
@@ -93,7 +96,7 @@ const reservaDolares = {};
         });
 
         //crear parte del HTML de los otros 2 piecharts
-        var top_section = document.getElementById("top_section");
+        var chart_section = document.getElementById("chart_section");
         var pieChartDiv1 = document.getElementById("pie-div-1")
         pieChartDiv1.classList.remove("single");
         pieChartDiv1.classList.add("group");
@@ -117,15 +120,15 @@ const reservaDolares = {};
 
         var title3 = document.createElement('h3');
         title3.className = 'chart-title';
-        title3.textContent = 'Reservas en Dólares';
+        title3.textContent = 'Reservas USD';
         pieChartDiv3.appendChild(title3);
 
         var reference = document.getElementById("balance_history");
 
         pieChartDiv2.appendChild(canvas2);
         pieChartDiv3.appendChild(canvas3);
-        top_section.insertBefore(pieChartDiv2, reference);
-        top_section.insertBefore(pieChartDiv3, reference);
+        chart_section.insertBefore(pieChartDiv2);
+        chart_section.insertBefore(pieChartDiv3);
 
 
         const pieCtx2 = document.getElementById('pieChart2').getContext('2d');
@@ -195,6 +198,7 @@ const reservaDolares = {};
         tableRow.insertBefore(ownerColumn, montoTH);
 
     }else{ //en caso de que sea un usuario individual
+        top_section.classList.add("tsingle"); //media queries mobile
         //modificar el primer título
         var title1 = document.getElementById("title1");
         title1.textContent = user.name;
@@ -214,7 +218,7 @@ const reservaDolares = {};
         const pieChart = new Chart(pieCtx, {
             type: 'doughnut',
             data: {
-                labels: ['BTC en Binance', 'BTC en Frío', 'Reservas en Dólares'],
+                labels: ['BTC en Binance', 'BTC en Frío', 'Reservas USD'],
                 datasets: [{
                     data: [
                         saldoBinanceUsuarios[user.name] /sats, 
