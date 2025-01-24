@@ -207,5 +207,6 @@ td {
 
     th, td {
         padding: 4px;
+        font-size: 1vh;
     }
 }
