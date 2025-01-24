@@ -49,9 +49,11 @@ app.get("/dashboard/dashboard.html", isAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 app.get("/dashboard/style.css", isAuthenticated, (req, res) => {
+	console.log("sending style");
 	res.sendFile(path.join(__dirname, "public", "style.css"));
 });
 app.get("/dashboard/code.js", isAuthenticated, (req, res) => {
+	console.log("sending code");
 	res.sendFile(path.join(__dirname, "public", "code.js"));
 });
 
