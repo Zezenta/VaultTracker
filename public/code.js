@@ -127,8 +127,8 @@ const reservaDolares = {};
 
         pieChartDiv2.appendChild(canvas2);
         pieChartDiv3.appendChild(canvas3);
-        chart_section.insertBefore(pieChartDiv2);
-        chart_section.insertBefore(pieChartDiv3);
+        chart_section.appendChild(pieChartDiv2);
+        chart_section.appendChild(pieChartDiv3);
 
 
         const pieCtx2 = document.getElementById('pieChart2').getContext('2d');
