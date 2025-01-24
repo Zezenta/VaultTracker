@@ -20,14 +20,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 0 0 40%;
+    flex: 0 0 50%;
 }
 
 .header-right {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 0 0 60%;
+    flex: 0 0 50%;
 }
 
 .header-section h2 {
@@ -42,21 +42,48 @@ body {
     height: 50%;
 }
 
+.chart-title {
+    font-size: 1.2em;
+    color: #fff;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
 .pie-chart {
-    width: 40%;
+    width: 20%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.chart-section {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.single {
+    width: 40%;
+    height: 70%;
+    align-self: center;
+}
+
+.group {
+    width: 33%;
 }
 
 .pie-chart canvas {
-    max-width: 80%;
+    max-width: 100%;
     height: auto;
 }
 
 .balance-history {
-    width: 60%;
+    width: 50%;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -93,4 +120,17 @@ th {
 
 td {
     font-size: 14px;
+}
+
+.text-verde {
+    color: rgb(48, 240, 48);
+}
+
+.text-rojo {
+    color: red;
+}
+
+.cold {
+    color: rgb(192, 192, 255);
+    text-align: center;
 }
