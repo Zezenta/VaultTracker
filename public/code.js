@@ -10,18 +10,7 @@ async function getPrice(){
     price = data.USD.last;
 }
 const sats = 100000000;
-/* DELETEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-(async () => { //daily report with complex charts
-    try {
-        const response = await fetch('/api/bitcoin');
-        const data = await response.json();
-        document.getElementById('price').textContent = `${data.USD.symbol} ${data.USD.last}`;
-        price = data.USD.last;
-    } catch (error) {
-        document.getElementById('price').textContent = 'Error al obtener precio';
-    }
-})();
-*/
+
 var user;
 var prices;
 
@@ -37,10 +26,10 @@ const reservaDolares = {};
 
 //create pie charts
 (async() => {
-    const userresponse = await fetch('/api/userdata');
+    const userresponse = await fetch('/api/userdata'); //consider changing to /vaulttracker/api/userdata (also should have to modify nginx to handle redirections; would also have to modify html srcs to /vaulttracker/api/userdata)
     user = await userresponse.json();
 
-    const pricesresponse = await fetch('/api/prices');
+    const pricesresponse = await fetch('/api/prices'); //consider changing to /vaulttracker/api/prices (also should have to modify nginx to handle redirections)
     prices = await pricesresponse.json();
     
     var top_section = document.getElementById("top_section");

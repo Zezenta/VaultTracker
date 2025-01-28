@@ -42,7 +42,7 @@ function isAuthenticated(req, res, next) {
 //dado que /dashboard redirige todo hacia acá (node), se tiene que servir manualmente esto
 app.get('/dashboard', isAuthenticated, (req, res) => {
 	console.log("Enviando dashboard.html...");
-	res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+	res.sendFile(path.join(__dirname, 'public', 'dashboard.html')); // dirname/public/dashboard.html 
 });
 app.get("/dashboard/dashboard.html", isAuthenticated, (req, res) => {
 	console.log("checkeando el html manual...");
@@ -63,17 +63,8 @@ app.get('/api/userdata', isAuthenticated, (req, res) => {
     res.json(req.session.user);
 });
 
-app.get('/api/prices', async (req, res) => {
+app.get('/api/prices', isAuthenticated, async (req, res) => {
     res.json(prices)
-});
-
-app.get('/api/bitcoin', async (req, res) => {
-    try {
-        const response = await axios.get('https://blockchain.info/ticker');
-        res.json(response.data); // Devuelve los datos al frontend
-    } catch (error) {
-        res.status(500).send('Error al obtener datos de la API');
-    }
 });
 
 // Iniciar el servidor
