@@ -155,13 +155,8 @@ td {
 
     .top-section {
         flex-direction: column;
-        height: 40%;
-    }
-    .tgroup{
-        height: 40%;
-    }
-    .tsingle{
-        height: 60%;
+        order: 1;
+        height: auto
     }
 
     .chart-section, .balance-history {
@@ -176,6 +171,7 @@ td {
 
     .table-container {
         width: 100%;
+        order: 2;
     }
 
     table {
