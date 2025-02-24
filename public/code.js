@@ -450,7 +450,7 @@ function agregarFila(date, owner, value, btcAmount, precioC, currentValue, chang
 
 function retiroFrio(date, cantidad, valorActual, change) {
     //para la tabla de Binance
-    const nuevaFila = tableBody.insertRow(1);
+    const nuevaFila = tableBody.insertRow(1); //insertar en la segunda fila
     const celdaFechaBi = nuevaFila.insertCell()
     const celdaTextoBi = nuevaFila.insertCell();
 
@@ -460,7 +460,7 @@ function retiroFrio(date, cantidad, valorActual, change) {
     celdaTextoBi.colSpan = 7;
 
     //tabla en frío
-    const nuevaFilaCold = coldTable.insertRow();
+    const nuevaFilaCold = coldTable.insertRow(1); //insertar en la segunda fila
     const celdaFecha = nuevaFilaCold.insertCell();
     const celdaCantidad = nuevaFilaCold.insertCell();
     const celdaValor = nuevaFilaCold.insertCell();

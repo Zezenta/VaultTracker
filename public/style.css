@@ -13,7 +13,6 @@ body {
 /* HEADER SECTION */
 .header-section {
     display: flex;
-    width: 98%;
     padding: 10px;
 }
 
